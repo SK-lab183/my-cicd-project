@@ -1,33 +1,25 @@
-name: Deploy to VPS
+name: CI/CD Pipeline
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy files to server via SCP
+      
+      - name: Copy files to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2222
-          source: "docker-compose.yml Dockerfile index.html"
-          target: "/home/deploy/app"
-
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 2222
-          script: |
-            cd /home/deploy/app
-            docker compose down || true
-            docker compose up -d --build 
+          source: "docker-compose.yml,Dockerfile,index.html"
+          target: /home/***/app
+          timeout: 30s
+          command_timeout: 10m
