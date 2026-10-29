@@ -21,7 +21,7 @@ jobs:
           target: "/home/deploy/app"
 
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@mastr
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
