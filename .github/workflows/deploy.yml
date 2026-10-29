@@ -1,10 +1,11 @@
 name: CI/CD Pipeline
+
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       
@@ -20,6 +21,17 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2222
           source: "docker-compose.yml,Dockerfile,index.html"
-          target: /home/***/app
-          timeout: 30s
-          command_timeout: 10m
+          target: /home/deploy/app
+
+      
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 2222
+          script: |
+            cd /home/deploy/app
+            docker compose down
+            docker compose up -d --build
