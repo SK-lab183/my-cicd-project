@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2222
-          source: "docker-compose.yml,Dockerfile,index.html"
+          source: "docker-compose.yml,Dockerfile,index.html,meme.jpg,nginx.conf"
           target: /home/deploy/app
 
       
